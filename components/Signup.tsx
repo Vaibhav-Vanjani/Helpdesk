@@ -1,6 +1,7 @@
 "use client";
 
 import Signup from "@/app/api/user/Signup";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type UserType = "admin" | "client" | "developer";
@@ -23,6 +24,7 @@ const INTIAL_SIGNUP:Signup={
 
 export default function(){
     const [signupFormData,setSignupFormData] = useState<Signup>(INTIAL_SIGNUP);
+    const router = useRouter();
     
     function signupFormChangeHandler(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>){
         const {name,value} = e.target;
@@ -34,7 +36,8 @@ export default function(){
         console.log(signupFormData);
        const response = await Signup(signupFormData);
        if(response.success){
-            alert('Success');
+           const userType = response?.data?.userType;
+           router.replace('/'+userType);
        }
        else{
             alert('Failure');

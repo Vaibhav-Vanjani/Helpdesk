@@ -1,6 +1,7 @@
 "use client";
 
 import login from "@/app/api/user/Login";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface Login{
@@ -15,6 +16,7 @@ const INTIAL_login:Login={
 
 export default function(){
     const [loginFormData,setloginFormData] = useState<Login>(INTIAL_login);
+    const router = useRouter();
     
     function loginFormChangeHandler(e:React.ChangeEvent<HTMLInputElement>){
         const {name,value} = e.target;
@@ -25,12 +27,13 @@ export default function(){
         e.preventDefault();
         console.log(loginFormData);
          const response = await login(loginFormData);
-              if(response.ok){
-                   alert('Success');
-              }
-              else{
-                   alert('Failure');
-              }
+         if(response.success){
+            const userType = response?.data?.userType;
+            router.replace('/'+userType);
+        }
+        else{
+                alert('Failure');
+        }
     }
 
     return <>

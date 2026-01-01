@@ -1,0 +1,28 @@
+"use client";
+import { useState } from "react"
+
+export default function(){
+    const [organistionFormData,SetOrganistionFormData] = useState({"organisationName":""});
+
+    function OrganisationFormChangeHandler(e:React.ChangeEvent<HTMLInputElement>){
+        const {name,value} = e.target;
+        SetOrganistionFormData(prev=>({...prev,[name]:value}));
+    }
+
+    function OrganisationFormSubmitHandler(e:React.FormEvent){
+        e.preventDefault();
+        console.log(organistionFormData,"Inside OrganisationFormSubmitHandler");
+    }
+
+    return (<>
+        <form onSubmit={OrganisationFormSubmitHandler}>
+            <input type="text" 
+                   name="organisationName"
+                   placeholder="Organisation Name"
+                   onChange={OrganisationFormChangeHandler}
+                   value={organistionFormData["organisationName"]}
+            ></input>
+            <button type="submit">Submit</button>
+        </form>
+    </>)
+}

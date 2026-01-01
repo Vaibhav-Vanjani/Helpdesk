@@ -12,11 +12,11 @@ interface Signup{
     userType:UserType,
 }
 
-export default async function({firstName,lastName,email,password}:Signup){ 
+export default async function({firstName,lastName,email,password,userType}:Signup){ 
    try {
         const response = await prisma.user.create({
             data:{
-                firstName,lastName,email,password
+                firstName,lastName,email,password,userType
             }
          });
 

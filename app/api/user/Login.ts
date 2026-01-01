@@ -1,7 +1,6 @@
 "use server";
 
 import {prisma} from '@/config/Db';
-import { NextResponse } from 'next/server';
 
 interface Login{
     email:string,
@@ -17,25 +16,25 @@ export default async function({email,password}:Login){
          });
 
         if(!response){
-              return NextResponse.json({
-                    data:"User Not Found",
-                },{
+              return {
+                    success:false,
+                    message:"User Not Found",
                     status:401
-              })
+              }
         } 
 
-        return NextResponse.json({
+        return {
+            success:true,
             data:response,
-        },{
             status:200
-        })
+        }
 
    } catch (error) {
         console.log(error,"Inside Login Fn");
-        return NextResponse.json({
+        return {
+            success:false,
             message:"Something went wrong while Login !!",
-        },{
             status:500
-        })
+        }
    }
 }
