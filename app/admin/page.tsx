@@ -19,7 +19,7 @@ export default function(){
     return (<>
     {
         adminBtn.map((btn)=>{
-            return <button key={btn.id} onClick={()=>route.replace(btn.routeTo)}>{btn.btnName}</button>
+            return <button key={btn.id} onClick={()=>route.push(btn.routeTo)}>{btn.btnName}</button>
         })
     }
     </>)

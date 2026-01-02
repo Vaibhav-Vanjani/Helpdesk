@@ -10,10 +10,10 @@ export default function(){
                 <li>_Helpdesk</li>
             </ul>
             <ul>
-                <li onClick={()=>{router.replace('/signup')}}>
+                <li onClick={()=>{router.push('/signup')}}>
                     Signup
                 </li>
-                  <li onClick={()=>{router.replace('/login')}}>
+                  <li onClick={()=>{router.push('/login')}}>
                     Login
                 </li>
             </ul>

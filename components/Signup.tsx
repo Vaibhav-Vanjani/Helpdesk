@@ -37,7 +37,7 @@ export default function(){
        const response = await Signup(signupFormData);
        if(response.success){
            const userType = response?.data?.userType;
-           router.replace('/'+userType);
+           router.push('/'+userType);
        }
        else{
             alert('Failure');

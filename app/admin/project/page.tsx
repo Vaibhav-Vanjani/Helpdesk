@@ -1,4 +1,5 @@
 "use client";
+import BackButton from "@/components/BackButton";
 import { useState } from "react";
 
 interface ProjectForm{
@@ -21,7 +22,7 @@ export default function(){
         SetprojectFormData(prev=>({...prev,[name]:value}));
 
         if(value === 'oldManagerId' && managerGroup.length===0){
-            // API call to set managerGroup with all present manager
+            // API call to get managerGroup with all present manager
         }
     }
 
@@ -39,8 +40,17 @@ export default function(){
         SetprojectFormData(prev=>({...prev,"createdManagerId":managerId}));
     }
 
+    function getActiveOrganisation(){
+        // Api Call and set organisation and change state
+
+    }
+
     return (<>
+        <BackButton/>
         <form onSubmit={ProjectFormSubmitHandler}>
+            <input type="text" 
+                   readOnly 
+                   onClick={getActiveOrganisation}></input>
             <input type="text" 
                    name="projectName"
                    placeholder="Project Name"

@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react"
+import BackButton from "@/components/BackButton";
+import { useState } from "react";
+import createOrganisation from '@/app/api/admin/organisation/Organinsation';
 
 export default function(){
     const [organistionFormData,SetOrganistionFormData] = useState({"organisationName":""});
@@ -9,12 +11,24 @@ export default function(){
         SetOrganistionFormData(prev=>({...prev,[name]:value}));
     }
 
-    function OrganisationFormSubmitHandler(e:React.FormEvent){
+    async function OrganisationFormSubmitHandler(e:React.FormEvent){
         e.preventDefault();
         console.log(organistionFormData,"Inside OrganisationFormSubmitHandler");
+        try {
+            const response = await createOrganisation(organistionFormData);
+            if(response.status){
+                alert("Successfully Created Organisation");
+            }
+            else{
+                alert("Failure -"+response.message);
+            }
+        } catch (error) {
+            alert("Internal Server Error");
+        }      
     }
 
     return (<>
+        <BackButton/>
         <form onSubmit={OrganisationFormSubmitHandler}>
             <input type="text" 
                    name="organisationName"
