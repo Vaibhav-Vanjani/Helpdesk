@@ -23,3 +23,22 @@ export default async function({organisationName}:Organisation){
         }
     }
 }
+
+export async function getOrganisation(){
+    try {
+        const response = await prisma.organisation.findMany({
+            where:{
+                isActive:true
+            }
+        })
+        return {
+            status:true,
+            data:response,
+        }
+    } catch (error) {
+        return {
+            status:false,
+            message:"Something went wrong while creating organisation !!",
+        }
+    }
+}

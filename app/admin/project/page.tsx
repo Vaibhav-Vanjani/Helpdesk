@@ -1,8 +1,10 @@
 "use client";
 import BackButton from "@/components/BackButton";
 import { useState } from "react";
+import { getOrganisation } from "@/app/api/admin/organisation/Organinsation";
 
 interface ProjectForm{
+    organisationName:string,
     projectName:string,
     assignTo:String,
     createdManagerId:string,
@@ -13,9 +15,16 @@ interface ManagerGroup{
     managerId:string,
 }
 
+interface OrganisationGroup{
+    id: number,
+    organisationName: string,
+    isActive: boolean,
+}
+
 export default function(){
     const [projectFormData,SetprojectFormData] = useState<Partial<ProjectForm>>({});
     const [managerGroup,setManagerGroup] = useState<Partial<ManagerGroup[]>>([]);
+    const [organisationGroup,setOrganisationGroup] = useState<Partial<OrganisationGroup[]>>([]);
 
     function ProjectFormChangeHandler(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>){
         const {name,value} = e.target;
@@ -23,6 +32,7 @@ export default function(){
 
         if(value === 'oldManagerId' && managerGroup.length===0){
             // API call to get managerGroup with all present manager
+            
         }
     }
 
@@ -40,22 +50,48 @@ export default function(){
         SetprojectFormData(prev=>({...prev,"createdManagerId":managerId}));
     }
 
-    function getActiveOrganisation(){
+    async function getActiveOrganisation(){
         // Api Call and set organisation and change state
-
+        console.log("Inside active organisation");
+        try {
+             const response = await getOrganisation();
+             if(response.status){
+                setOrganisationGroup(response.data ?? []);
+             }
+        } catch (error) {
+            alert("Something went wrong while fetching Organisation");
+        }
     }
 
     return (<>
         <BackButton/>
         <form onSubmit={ProjectFormSubmitHandler}>
-            <input type="text" 
-                   readOnly 
-                   onClick={getActiveOrganisation}></input>
+           { organisationGroup.length>0 ? 
+             (
+                <select name="organisationName" onChange={ProjectFormChangeHandler}>
+                <>
+                    <option value={"Select"}>{"Select"}</option>
+                    {
+                        organisationGroup.map((organisation)=>{
+                            return <option key={organisation?.id} value={organisation?.organisationName}>{organisation?.organisationName}</option>
+                        })
+                    }
+                </>
+                </select>
+            )
+                :
+             (
+             <select onClick={getActiveOrganisation}>
+                <option value={"Select"}>{"Select"}</option>
+             </select>
+             )
+           }
+            
             <input type="text" 
                    name="projectName"
                    placeholder="Project Name"
                    onChange={ProjectFormChangeHandler}
-                   value={projectFormData["projectName"]}
+                   value={projectFormData["projectName"] ?? ""}
             ></input>
             <label htmlFor="newManagerId">Generate New Manager Id</label>
             <input type="radio" 

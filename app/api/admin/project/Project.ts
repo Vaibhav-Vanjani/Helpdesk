@@ -6,13 +6,13 @@ interface ManagerGroup{
     managerId:string,
 }
 
-export async function createManager(req:ManagerGroup){
+export async function getManager(req:ManagerGroup){
     try {
-        // const response = await prisma.user.create({
-        //     data:{
-                
-        //     }
-        // })
+        const response = await prisma.userMapping.findMany({
+          where:{
+            
+          }
+        })
     } catch (error) {
         
     }
