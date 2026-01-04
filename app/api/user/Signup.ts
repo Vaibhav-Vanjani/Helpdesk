@@ -10,13 +10,30 @@ interface Signup{
     email:string,
     password:string,
     userType:UserType,
+    userId?:string,
 }
 
-export default async function({firstName,lastName,email,password,userType}:Signup){ 
+export default async function(req:Signup){ 
    try {
+
+        if(req?.userId){
+            const checkIfUserIdExist = await prisma.user.findFirst({
+                where:{
+                    userId:req.userId
+                }
+            });
+
+            if(!checkIfUserIdExist){
+                return {
+                    success:false,
+                    message:"Invitation ID does not exist!",
+                }
+            }
+        }
+
         const response = await prisma.user.create({
             data:{
-                firstName,lastName,email,password,userType
+                ...req
             }
          });
 

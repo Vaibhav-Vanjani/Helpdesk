@@ -6,14 +6,52 @@ interface ManagerGroup{
     managerId:string,
 }
 
-export async function getManager(req:ManagerGroup){
+interface ProjectForm{
+    organisationName:string,
+    projectName:string,
+    assignTo:String,
+    managerId:string,
+}
+
+export async function getManager(){
+    console.log("Inside getManager2");
     try {
-        const response = await prisma.userMapping.findMany({
+        const response = await prisma.user.findMany({
           where:{
-            
+            isActive:true,
+            userType:"manager"
           }
         })
+
+        return {
+            success:true,
+            data:response,
+        }
     } catch (error) {
-        
+        console.log(error,"Inside getManager Catch fn");
+        return {
+            success:false,
+            message:"Something went wrong!",
+        }
     }
+}
+
+export async function createProject(req:Omit<ProjectForm,"assignTo">) {
+  try {
+        const response = await prisma.project.create({
+            data:{
+                  ...req
+            }
+        })
+        return {
+            success:true,
+            data:response,
+        }
+  } catch (error) {
+        console.log(error);
+        return {
+            success:false,
+            message:"Something went wrong!",
+        }
+  }
 }

@@ -15,6 +15,7 @@ model User {
   password  String
   userType  String
   isActive Boolean @default(true)
+  userId String @default("NONE")
 }
 
 model Organisation{
@@ -27,6 +28,8 @@ model Project{
   id Int @id @default(autoincrement())
   projectName String @unique
   isActive Boolean @default(true)
+  organisationName String
+  managerId String
 }
 
 model UserMapping{
@@ -34,4 +37,10 @@ model UserMapping{
   email String 
   projectName String
   organisationName String
+}
+
+model UserIdMapping{
+  id Int @id @default(autoincrement())
+  invitationId String
+  role String
 }

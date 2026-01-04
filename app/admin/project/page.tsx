@@ -2,12 +2,18 @@
 import BackButton from "@/components/BackButton";
 import { useState } from "react";
 import { getOrganisation } from "@/app/api/admin/organisation/Organinsation";
+import { createProject, getManager } from "@/app/api/admin/project/Project";
 
+// Constants
+const OLD_MANAGER_ID = "oldManagerId"; 
+const ALL_CHAR_STRINGS = "QWERTYUIOPASDFGHJKLZXCVBNM123456789!@#$%^&*";
+
+// types 
 interface ProjectForm{
     organisationName:string,
     projectName:string,
     assignTo:String,
-    createdManagerId:string,
+    managerId:string,
 }
 
 interface ManagerGroup{
@@ -26,28 +32,64 @@ export default function(){
     const [managerGroup,setManagerGroup] = useState<Partial<ManagerGroup[]>>([]);
     const [organisationGroup,setOrganisationGroup] = useState<Partial<OrganisationGroup[]>>([]);
 
-    function ProjectFormChangeHandler(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>){
+   async function ProjectFormChangeHandler(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>){
+     console.log("Inside ProjectFormChangeHandler !!");
         const {name,value} = e.target;
         SetprojectFormData(prev=>({...prev,[name]:value}));
 
-        if(value === 'oldManagerId' && managerGroup.length===0){
+        if(name === "assignTo" && value === 'oldManagerId' && managerGroup.length===0){
             // API call to get managerGroup with all present manager
-            
+            console.log("Inside getManager !!");
+            await getManager().then((data)=>{
+                if(!data.success){
+                    setManagerGroup([]);
+                    return ;
+                }
+                const managerAdapter = (data?.data ?? []).map(manager => ({
+                    managerName: `${manager.firstName} ${manager.lastName}`,
+                    managerId: ""
+                }));
+
+                setManagerGroup(managerAdapter);
+            });
         }
     }
 
-    function ProjectFormSubmitHandler(e:React.FormEvent){
+    async function ProjectFormSubmitHandler(e:React.FormEvent){
         e.preventDefault();
+        const submitter = (e.nativeEvent as SubmitEvent)
+            .submitter as HTMLButtonElement;
+
+        if (submitter.name !== "formSubmit") {
+            return;
+        }
+
         console.log(projectFormData,"Inside OrganisationFormSubmitHandler");
+        if(!projectFormData?.assignTo ||
+           !projectFormData?.managerId ||
+           !projectFormData?.organisationName ||
+           !projectFormData?.projectName){
+            alert("please fill all required fields !!");
+            return;
+        }
+        delete projectFormData["assignTo"];
+       const response = await createProject(projectFormData as ProjectForm);
+       if(!response.success){
+        alert("Something Went Wrong!");
+        return;
+       }
+
+       alert("Successfully Created Project");
+       SetprojectFormData({});
     }
 
     function createManagerIdHandler(){
-        const allCharString = "QWERTYUIOPASDFGHJKLZXCVBNM123456789!@#$%^&*"
+        const allCharString = ALL_CHAR_STRINGS;
         let managerId ="";
         for(let i=0;i<8;i++){
             managerId+=allCharString[Math.floor(Math.random()*allCharString.length)]
         }
-        SetprojectFormData(prev=>({...prev,"createdManagerId":managerId}));
+        SetprojectFormData(prev=>({...prev,"managerId":managerId}));
     }
 
     async function getActiveOrganisation(){
@@ -113,9 +155,10 @@ export default function(){
            
             {projectFormData.assignTo === 'oldManagerId' ? 
                 (<>
-                    <select onChange={ProjectFormChangeHandler}>
+                    <select name="managerId" onChange={ProjectFormChangeHandler} value={projectFormData.managerId ?? ""}>
+                        <option value={"Select"}>Select</option>
                         {managerGroup.map((manager)=>{
-                            return <option key={manager?.managerId} value={manager?.managerName}>{manager?.managerName}</option>
+                            return <option key={manager?.managerName} value={manager?.managerName}>{manager?.managerName}</option>
                         })}
                     </select>
                 </>)
@@ -123,12 +166,12 @@ export default function(){
                 (<>
                     <input type="text"
                            readOnly
-                           value={projectFormData.createdManagerId ?? ""}></input>
+                           value={projectFormData.managerId ?? ""}></input>
                     <button onClick={createManagerIdHandler}>Create Manager ID</button>
                 </>)
             }
             
-            <button type="submit">Submit</button>
+            <button name="formSubmit" type="submit">Submit</button>
         </form>
     </>)
 }

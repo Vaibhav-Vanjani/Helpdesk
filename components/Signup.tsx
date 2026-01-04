@@ -12,6 +12,7 @@ interface Signup{
     email:string,
     password:string,
     userType:UserType,
+    userId?:string
 }
 
 const INTIAL_SIGNUP:Signup={
@@ -19,7 +20,8 @@ const INTIAL_SIGNUP:Signup={
     lastName:"",
     email:"",
     password:"",
-    userType:"developer"
+    userType:"developer",
+    userId:""
 }
 
 export default function(){
@@ -40,7 +42,7 @@ export default function(){
            router.push('/'+userType);
        }
        else{
-            alert('Failure');
+            alert('Something went wrong!');
        }
     }
 
@@ -81,6 +83,12 @@ export default function(){
                    onChange={signupFormChangeHandler}
                    value={signupFormData.password}
                    required
+            ></input>
+            <input type="text"
+                   placeholder="Invitation ID"
+                   name="userId"
+                   onChange={signupFormChangeHandler}
+                   value={signupFormData.userId}
             ></input>
             <button>Sign Up</button>
         </form>
