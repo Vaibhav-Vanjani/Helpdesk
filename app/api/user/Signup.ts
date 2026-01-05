@@ -2,7 +2,7 @@
 
 import {prisma} from '@/config/Db';
 
-type UserType = "admin" | "client" | "developer";
+type UserType = "admin" | "client" | "developer" | "manager";
 
 interface Signup{
     firstName:string,

@@ -4,7 +4,7 @@ import Signup from "@/app/api/user/Signup";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-type UserType = "admin" | "client" | "developer";
+type UserType = "admin" | "client" | "developer" | "manager";
 
 interface Signup{
     firstName:string,
@@ -46,51 +46,95 @@ export default function(){
        }
     }
 
-    return <>
-        <form onSubmit={signupFormSubmitHandler}>
-            <input type="text" 
-                   placeholder="First Name"
-                   name="firstName"
-                   onChange={signupFormChangeHandler}
-                   value={signupFormData.firstName}
-                   required
-            ></input>
-            <input type="text" 
-                   placeholder="Last Name"
-                   name="lastName"
-                   onChange={signupFormChangeHandler}
-                   value={signupFormData.lastName}
-                   required
-            ></input>
-            <select name="userType"
-                   onChange={signupFormChangeHandler}
-                   value={signupFormData.userType}
-                   required>
-                <option value={"admin"}>Admin</option>
-                <option value={"client"}>Client</option>
-                <option value={"developer"}>Developer</option>
-            </select>
-            <input type="email" 
-                   placeholder="Email"
-                   name="email"
-                   onChange={signupFormChangeHandler}
-                   value={signupFormData.email}
-                   required
-            ></input>
-            <input type="password" 
-                   placeholder="Password"
-                   name="password"
-                   onChange={signupFormChangeHandler}
-                   value={signupFormData.password}
-                   required
-            ></input>
-            <input type="text"
-                   placeholder="Invitation ID"
-                   name="userId"
-                   onChange={signupFormChangeHandler}
-                   value={signupFormData.userId}
-            ></input>
-            <button>Sign Up</button>
-        </form>
-    </>
+    return (
+  <>
+   <section className="fixed top-1/4 left-1/8 md:left-1/6 lg:left-1/3">
+    <form
+      onSubmit={signupFormSubmitHandler}
+      className="mx-auto max-w-md space-y-4 rounded-xl bg-white p-6 shadow-lg"
+    >
+      <h2 className="text-center text-2xl font-semibold text-gray-800">
+        Create Account
+      </h2>
+
+      <input
+        type="text"
+        name="firstName"
+        placeholder="First Name"
+        value={signupFormData.firstName}
+        onChange={signupFormChangeHandler}
+        required
+        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm
+                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <input
+        type="text"
+        name="lastName"
+        placeholder="Last Name"
+        value={signupFormData.lastName}
+        onChange={signupFormChangeHandler}
+        required
+        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm
+                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <select
+        name="userType"
+        value={signupFormData.userType}
+        onChange={signupFormChangeHandler}
+        required
+        className="w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm
+                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      >
+        <option value="admin">Admin</option>
+        <option value="client">Client</option>
+        <option value="developer">Developer</option>
+        <option value="manager">Manager</option>
+      </select>
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={signupFormData.email}
+        onChange={signupFormChangeHandler}
+        required
+        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm
+                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={signupFormData.password}
+        onChange={signupFormChangeHandler}
+        required
+        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm
+                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <input
+        type="text"
+        name="userId"
+        placeholder="Invitation ID (optional)"
+        value={signupFormData.userId}
+        onChange={signupFormChangeHandler}
+        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm
+                   focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      />
+
+      <button
+        type="submit"
+        className="w-full rounded-md bg-blue-600 py-2 text-white font-medium
+                   hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      >
+        Sign Up
+      </button>
+    </form>
+    </section>
+  </>
+);
+
 }
