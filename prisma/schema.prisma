@@ -34,7 +34,7 @@ model Project{
 
 model UserMapping{
   id Int @id @default(autoincrement())
-  email String 
+  userId String
   projectName String
   organisationName String
 }
@@ -43,4 +43,5 @@ model UserIdMapping{
   id Int @id @default(autoincrement())
   invitationId String
   role String
+  projectName String
 }

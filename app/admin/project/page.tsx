@@ -72,9 +72,8 @@ export default function(){
             alert("please fill all required fields !!");
             return;
         }
-        delete projectFormData["assignTo"];
        const response = await createProject(projectFormData as ProjectForm);
-       if(!response.success){
+       if(!response?.success){
         alert("Something Went Wrong!");
         return;
        }

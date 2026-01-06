@@ -1,20 +1,17 @@
 "use server";
 import {prisma} from '@/config/Db';
 
-interface ManagerGroup{
-    managerName:string,
-    managerId:string,
-}
+const NEW_MANAGER_ID="newManagerId";
+const MANAGER="manager";
 
 interface ProjectForm{
     organisationName:string,
     projectName:string,
-    assignTo:String,
+    assignTo?:String,
     managerId:string,
 }
 
 export async function getManager(){
-    console.log("Inside getManager2");
     try {
         const response = await prisma.user.findMany({
           where:{
@@ -36,13 +33,35 @@ export async function getManager(){
     }
 }
 
-export async function createProject(req:Omit<ProjectForm,"assignTo">) {
+export async function createProject(req:ProjectForm) {
   try {
+        if(NEW_MANAGER_ID === req.assignTo){
+            await prisma.userIdMapping.create({
+                data:{
+                    invitationId:req.managerId,
+                    projectName:req.projectName,
+                    role:MANAGER,
+                }
+            })
+        }
+        else{
+            await prisma.userMapping.create({
+                data:{
+                    organisationName:req.organisationName,
+                    projectName:req.projectName,
+                    userId:req.managerId
+                }
+            })
+        }
+
+        delete req.assignTo;
+        
         const response = await prisma.project.create({
             data:{
                   ...req
             }
         })
+
         return {
             success:true,
             data:response,
